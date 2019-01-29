@@ -4,13 +4,12 @@
 #include <kernel/tty.h>
 #endif
 
-int putchar(int ic) {
+int putint(int i) {
 #if defined(__is_libk)
-	char c = (char) ic;
-	terminal_write(&c, sizeof(c));
+	terminal_writeint(i);
 #else
 	// TODO: Implement stdio and the write system call.
 #endif
-	return ic;
+	return i;
 }
 // 

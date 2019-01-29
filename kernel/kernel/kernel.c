@@ -1,11 +1,10 @@
 #include <stdio.h>
+#include <stdint.h>
 
 #include <kernel/tty.h>
 
-void kernel_main(void) {
+void kernel_main(uint8_t* multiboot) {
 	terminal_initialize();
 	printf("Hello, kernel World!\n");
-    //for(int i = 0; i < 100; i++){
-        printf("This is on a new line!%i\n", 1);
-    //}
+    printf("Multiboot Structure located at: %i", multiboot[0]);
 }

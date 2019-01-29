@@ -16,6 +16,21 @@ static size_t terminal_column;
 static uint8_t terminal_color;
 static uint16_t* terminal_buffer;
 
+void terminal_newline(){
+    terminal_column = 0;
+    if (++terminal_row == VGA_HEIGHT){
+        for(int x = 0; x < VGA_WIDTH; x++){
+            for(int y = 1; y < VGA_HEIGHT; y++){
+                terminal_buffer[(y-1) * VGA_WIDTH + x] = terminal_buffer[y * VGA_WIDTH + x];
+                if(y == VGA_HEIGHT -1){
+                    terminal_putentryat(' ', terminal_color, x, y);
+                }
+            }
+        }
+        terminal_row--;
+    }
+}
+
 void terminal_initialize(void) {
 	terminal_row = 0;
 	terminal_column = 0;
@@ -42,17 +57,12 @@ void terminal_putchar(char c) {
 	unsigned char uc = c;
     switch(uc){
         case '\n':
-            terminal_column = 0;
-            if (++terminal_row == VGA_HEIGHT)
-                    terminal_row = 0;
+            terminal_newline();
             break;
         default:
             terminal_putentryat(uc, terminal_color, terminal_column, terminal_row);
-            if (++terminal_column == VGA_WIDTH) {
-                terminal_column = 0;
-                if (++terminal_row == VGA_HEIGHT)
-                    terminal_row = 0;
-            }
+            if (++terminal_column == VGA_WIDTH)
+                terminal_newline();
     }
 }
 
@@ -63,4 +73,26 @@ void terminal_write(const char* data, size_t size) {
 
 void terminal_writestring(const char* data) {
 	terminal_write(data, strlen(data));
+}
+
+void terminal_writeint(int i){
+    const char* digits = "0123456789";
+    int digit = i % 10;
+    i -= digit;
+    i /= 10;
+    if(i != 0){
+        terminal_writeint(i);
+    }
+    terminal_putchar(digits[digit]);
+}
+
+void terminal_writehex(int i){
+    const char* digits = "0123456789ABCDEF";
+    int digit = i % 16;
+    i -= digit;
+    i /= 16;
+    if(i != 0){
+        terminal_writeint(i);
+    }
+    terminal_putchar(digits[digit]);
 }

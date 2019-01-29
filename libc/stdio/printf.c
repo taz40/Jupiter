@@ -4,20 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-const char* inttostring(int i){
-    const char* digits = "0123456789";
-    const char* str = "";
-    int digit = i % 10;
-    i -= digit;
-    i /= 10;
-    if(i != 0){
-        str
-        return inttostring(i) + digits[digit];
-    }else{
-        return digits[digit];
-    }
-}
-
 static bool print(const char* data, size_t length) {
 	const unsigned char* bytes = (const unsigned char*) data;
 	for (size_t i = 0; i < length; i++)
@@ -78,14 +64,32 @@ int printf(const char* restrict format, ...) {
 		} else if (*format == 'i') {
 			format++;
 			int i = va_arg(parameters, int);
-            const char* str = inttostring(i);
-			size_t len = strlen(str);
+            int n = i;
+            int len = 0; 
+            while (n != 0) { 
+                n = n / 10; 
+                ++len; 
+            } 
 			if (maxrem < len) {
 				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
-			if (!print(str, len))
+			putint(i);
+			written += len;
+		}else if (*format == 'h') {
+			format++;
+			int i = va_arg(parameters, int);
+            int n = i;
+            int len = 0; 
+            while (n != 0) { 
+                n = n / 16; 
+                ++len; 
+            } 
+			if (maxrem < len) {
+				// TODO: Set errno to EOVERFLOW.
 				return -1;
+			}
+			puthex(i);
 			written += len;
 		}else {
 			format = format_begun_at;

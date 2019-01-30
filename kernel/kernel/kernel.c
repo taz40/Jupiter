@@ -5,6 +5,7 @@
 
 void kernel_main(uint32_t* multiboot) {
 	terminal_initialize();
+    uint32_t memorySize = multiboot[2];
 	printf("Hello, kernel World!\n");
-    printf("Multiboot tag1 type: %i", multiboot[2]);
+    printf("Memory: %iMB", multiboot[2] / 1024);
 }

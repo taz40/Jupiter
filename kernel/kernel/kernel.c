@@ -3,8 +3,8 @@
 
 #include <kernel/tty.h>
 
-void kernel_main(uint8_t* multiboot) {
+void kernel_main(uint32_t* multiboot) {
 	terminal_initialize();
 	printf("Hello, kernel World!\n");
-    printf("Multiboot Structure located at: %i", multiboot[0]);
+    printf("Multiboot tag1 type: %i", multiboot[2]);
 }

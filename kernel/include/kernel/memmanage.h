@@ -7,7 +7,8 @@
 struct head{
     uint8_t free;
     uint32_t size;
-    uint32_t* next;
+    struct head* next;
+    struct head* prev;
 }__attribute__((packed));
 
 void memmanage_init(uint32_t start, uint32_t size);

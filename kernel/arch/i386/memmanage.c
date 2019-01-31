@@ -6,8 +6,9 @@ static struct head* root;
 void memmanage_init(uint32_t start, uint32_t size){
     root = (struct head*)start;
     root->free = 1;
-    root->size = size;
+    root->size = size-sizeof(struct head);
     root->next = NULL;
+    root->prev = NULL;
 }
 
 uint32_t* memmanage_malloc(uint32_t size){
@@ -31,11 +32,16 @@ uint32_t* memmanage_malloc(uint32_t size){
         //printf("node at %i\n", (uint32_t)newNode);
         newNode->free = 1;
         newNode->next = node->next;
+        newNode->prev = node;
         newNode->size = node->size-(size+sizeof(struct head));
-        node->free = 0;
         node->size = size;
         node->next = newNode;
+        if(newNode->next != NULL){
+            newNode->next->prev = newNode;
+        }
     }
+    node->free = 0;
+    return (uint32_t)node + sizeof(struct head);
 }
 
 uint32_t* memmanage_calloc(uint32_t count, uint32_t size){
